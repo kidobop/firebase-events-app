@@ -75,7 +75,7 @@ const EventsExplorer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {filteredEvents.map(event => (
             <div key={event.id} className="border rounded-lg p-4 shadow-sm">
-              <h3 className="text-xl font-semibold mb-2">{event.description}</h3>
+              <h3 className="text-xl font-semibold mb-2">{event.name}</h3>
               <div className="flex items-center text-gray-600 mb-2">
                 <Calendar className="w-4 h-4 mr-2" />
                 <span>{event.date}</span>

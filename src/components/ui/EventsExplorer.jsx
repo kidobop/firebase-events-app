@@ -1,21 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, Clock } from 'lucide-react';
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase"; // Adjust this path as necessary
 
 const EventsExplorer = () => {
+  const [events, setEvents] = useState([]);
   const [filter, setFilter] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const events = [
-    { id: 1, name: 'Tech Conference 2024', date: '2024-10-15', status: 'upcoming' },
-    { id: 2, name: 'Annual Charity Run', date: '2024-09-20', status: 'upcoming' },
-    { id: 3, name: 'Summer Music Festival', date: '2024-07-01', status: 'ongoing' },
-    { id: 4, name: 'Art Exhibition', date: '2024-08-05', status: 'ongoing' },
-    { id: 5, name: 'Startup Pitch Competition', date: '2024-11-30', status: 'upcoming' },
-    { id: 6, name: 'Food and Wine Expo', date: '2024-09-10', status: 'upcoming' },
-  ];
+  useEffect(() => {
+    console.log("Component mounted");
+    const fetchEvents = async () => {
+      try {
+        console.log("Fetching events...");
+        const eventsCollection = collection(db, 'events');
+        const eventSnapshot = await getDocs(eventsCollection);
+        const eventList = eventSnapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+            date: data.date?.toDate?.().toLocaleDateString() || 'No date'
+          };
+        });
+        console.log("Fetched events:", eventList);
+        setEvents(eventList);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching events: ", error);
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   const filteredEvents = events.filter(event => 
     filter === 'all' || event.status === filter
   );
+
+  if (error) {
+    return <div className="text-center mt-8 text-red-600">Error: {error}</div>;
+  }
+
+  if (loading) {
+    return <div className="text-center mt-8">Loading events...</div>;
+  }
+
+  console.log("Rendering component with events:", events);
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -35,25 +69,29 @@ const EventsExplorer = () => {
         </select>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {filteredEvents.map(event => (
-          <div key={event.id} className="border rounded-lg p-4 shadow-sm">
-            <h3 className="text-xl font-semibold mb-2">{event.name}</h3>
-            <div className="flex items-center text-gray-600 mb-2">
-              <Calendar className="w-4 h-4 mr-2" />
-              <span>{event.date}</span>
+      {filteredEvents.length === 0 ? (
+        <div className="text-center">No events found.</div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {filteredEvents.map(event => (
+            <div key={event.id} className="border rounded-lg p-4 shadow-sm">
+              <h3 className="text-xl font-semibold mb-2">{event.description}</h3>
+              <div className="flex items-center text-gray-600 mb-2">
+                <Calendar className="w-4 h-4 mr-2" />
+                <span>{event.date}</span>
+              </div>
+              <div className="flex items-center">
+                <Clock className="w-4 h-4 mr-2" />
+                <span className={`capitalize ${
+                  event.status === 'ongoing' ? 'text-green-600' : 'text-blue-600'
+                }`}>
+                  {event.status}
+                </span>
+              </div>
             </div>
-            <div className="flex items-center">
-              <Clock className="w-4 h-4 mr-2" />
-              <span className={`capitalize ${
-                event.status === 'ongoing' ? 'text-green-600' : 'text-blue-600'
-              }`}>
-                {event.status}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

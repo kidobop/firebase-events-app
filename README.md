@@ -5,7 +5,7 @@
 ## Overview
 
 The **Vite Firebase Events App** is a simple CRUD application built using **Vite** and **Firebase**. This project serves as a practical demonstration of how to integrate Firebase with Vite to create a responsive and modern web application. The app is designed to manage events, allowing users to create, read, update, and delete event entries.
-![Preview of the Vite Firebase Events App](mevents/public/preview.jpeg)
+![Preview of the Vite Firebase Events App](public/preview.jpeg)
 
 ## Features
 

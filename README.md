@@ -33,7 +33,7 @@ To use this project with your own Firebase setup, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/vite-firebase-events-app.git
+   git clone https://github.com/kidobop/firebase-events-app
    cd vite-firebase-events-app
 2. **Install Dependencies**:
     ```bash

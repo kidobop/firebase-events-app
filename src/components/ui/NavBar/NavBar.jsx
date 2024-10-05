@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, AlertDialogFooter, AlertDialogAction } from '@/components/ui/alert-dialog';
+import NewEvent from '../NewEvent';
+
 
 function NavLink({ title, link }) {
   return (
@@ -10,6 +13,10 @@ function NavLink({ title, link }) {
 }
 
 function NavBar() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleClose = () => setIsOpen(false);
+
   return (
     <nav className="container mx-auto px-4 py-2">
       <div className="flex items-center justify-between">
@@ -18,7 +25,20 @@ function NavBar() {
           <NavLink title="Events" link="#" />
           <NavLink title="About" link="#" />
         </div>
-        <Button>New Event</Button>
+        <AlertDialog open={isOpen} onOpenChange={setIsOpen} className="max-w-md max-h-min">
+          <AlertDialogTrigger asChild>
+            <Button onClick={() => setIsOpen(true)}>New Event</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent >
+            <AlertDialogHeader>
+              <AlertDialogTitle>Create New Event</AlertDialogTitle>
+            </AlertDialogHeader>
+            <NewEvent onClose={handleClose} />
+            <AlertDialogFooter>
+              <AlertDialogAction onClick={handleClose}>Close</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </nav>
   )

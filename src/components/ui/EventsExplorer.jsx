@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock } from 'lucide-react';
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebase"; // Adjust this path as necessary
+import { db } from "../../firebase"; 
 
 const EventsExplorer = () => {
   const [events, setEvents] = useState([]);
